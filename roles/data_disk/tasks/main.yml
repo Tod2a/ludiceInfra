@@ -1,0 +1,17 @@
+---
+# tasks file for data_disk
+
+- name: Data ext4 partition
+  community.general.filesystem:
+    fstype: ext4
+    resizefs: true
+    dev: "{{ data_disk_src }}"
+
+- name: Mount and bind volume
+  ansible.posix.mount:
+    path: "{{ data_disk_mount }}"
+    src: "{{ data_disk_src }}"
+    opts: defaults
+    state: mounted
+    fstype: ext4
+    backup: true

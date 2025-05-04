@@ -1,0 +1,21 @@
+---
+# defaults file for base_server
+
+# ==================
+# SSHD Configuration
+# ==================
+
+# Update sshd config to restrict ssh allowed users
+# value should be a space-separated list of usernames
+# Example: "root ubuntu monitoring"
+base_server_config_allowed_users: "{{ undef('base_server_config_allowed_users should be defined') }}"
+
+# Update sshd config to disable ssh authentication through password
+base_server_config_no_password_auth: true
+
+
+
+
+base_server_tools:
+  - fail2ban
+  - acl

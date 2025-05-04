@@ -1,0 +1,8 @@
+---
+# defaults file for data_disk
+
+# Data disk location
+data_disk_src: "/dev/sdb"
+
+# Data disk mount point
+data_disk_mount: "/data"

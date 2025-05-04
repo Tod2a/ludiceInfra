@@ -1,0 +1,6 @@
+---
+# defaults file for postgresql_server
+
+postgresql_server_custom_cluster: true
+
+postgresql_server_data_dir: false

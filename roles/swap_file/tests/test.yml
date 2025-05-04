@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - role: swap_file
+      vars:
+        swap_file_path: "/swap"
+        swap_file_size: "2G"

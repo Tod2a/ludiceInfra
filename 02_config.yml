@@ -1,0 +1,13 @@
+---
+- name: Server Configuration
+  remote_user: ludice
+  become: true
+  become_method: sudo
+  hosts: all
+  roles:
+    # - role: base_server
+    # - role: data_disk
+    # - role: swap_file
+    # - role: postgresql_server
+    - role: ludice_setup
+

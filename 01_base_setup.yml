@@ -1,0 +1,36 @@
+---
+- name: Base server setup
+  remote_user: ubuntu
+  become: true
+  become_method: sudo
+  hosts: all
+  tasks:
+  - name: Update all packages to their latest version
+    ansible.builtin.apt:
+      name: "*"
+      state: latest
+      update_cache: true
+
+  - name: Create ludice user
+    ansible.builtin.user:
+      name: "{{ ludice_user }}"
+      password: "!"
+      generate_ssh_key: true
+      ssh_key_bits: 2048
+      ssh_key_file: .ssh/id_rsa
+      shell: /usr/bin/bash
+
+  - name: Grant sudo to ludice user
+    community.general.sudoers:
+      name: ludice-sudo
+      state: present
+      user: "{{ ludice_user }}"
+      runas: ALL
+      commands: ALL
+
+  - name: Update Authorized keys for ludice user
+    ansible.posix.authorized_key:
+      user: "{{ ludice_user }}"
+      key: "{{ ludice_authorized_key }}"
+      state: present
+

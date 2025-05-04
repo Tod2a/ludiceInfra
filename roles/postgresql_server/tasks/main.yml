@@ -1,0 +1,18 @@
+---
+# tasks file for postgresql_server
+
+- name: Install or update postgresql
+  ansible.builtin.apt:
+    name: "{{ postgresql_server_apt_reqs }}"
+    state: latest
+    install_recommends: false
+    update_cache: true
+
+- name: Ensure the PostgreSQL service is running
+  ansible.builtin.service:
+    name: postgresql
+    state: started
+
+- name: Cluster Location
+  ansible.builtin.import_tasks: cluster.yml
+  when: postgresql_server_custom_cluster

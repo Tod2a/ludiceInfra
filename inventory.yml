@@ -1,0 +1,12 @@
+all:
+  vars:
+    ludice_user: ludice
+    ludice_authorized_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICR60RcZXhfTyTc5YKCXp+ZKHiAmAvWB2EBS/zIIhr7+"
+    base_server_config_allowed_users: "{{ ludice_user }}"
+    postgresql_server_custom_cluster: true
+    postgresql_server_data_dir: "/data/postgresql"
+  hosts:
+    tst.ludice.app:
+      ludice_setup_branch: "develop"
+    # ludice.app:
+    #   ludice_setup_branch: "master"

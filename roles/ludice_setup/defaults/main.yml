@@ -1,0 +1,11 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for ludice_setup
+
+ludice_setup_repository: "git@github.com:Tod2a/ludiceWeb.git"
+ludice_setup_path: "/data/ludice"
+ludice_setup_user: ludice
+ludice_setup_branch: "develop"
+
+ludice_setup_symlink: "/var/www/ludice"
+ludice_server_url: "tst.ludice.app"

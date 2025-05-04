@@ -1,0 +1,24 @@
+---
+# handlers file for postgresql_odoo
+
+- name: Cluster data setting changes
+  ansible.builtin.service:
+    name: postgresql
+    state: stopped
+  notify: Move pg cluster data
+
+- name: Move pg cluster data
+  ansible.builtin.command:
+    cmd: "mv {{ pg_info['settings']['data_directory']['setting'] }} {{ postgresql_server_data_dir }}"
+    creates: "{{ postgresql_server_data_dir }}"
+  notify: Start Cluster
+
+- name: Start Cluster
+  ansible.builtin.service:
+    name: postgresql
+    state: started
+
+- name: Restart PostgreSQL
+  ansible.builtin.service:
+    name: postgresql
+    state: restarted

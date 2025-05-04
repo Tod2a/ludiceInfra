@@ -1,0 +1,8 @@
+---
+# vars file for postgresql_server
+
+postgresql_server_apt_reqs:
+  - "postgresql"
+  - "python3-psycopg2"
+
+postgresql_superuser: "postgres"

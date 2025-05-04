@@ -1,0 +1,8 @@
+---
+# defaults file for swap_file
+
+# Swap file
+swap_file_path: "/swap"
+
+# Swap size
+swap_file_size: 2G

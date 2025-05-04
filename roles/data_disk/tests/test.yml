@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - role: data_disk
+      vars:
+        data_disk_src: "/dev/sdb"
+        data_disk_mount: "/data"

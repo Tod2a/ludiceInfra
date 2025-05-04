@@ -1,0 +1,27 @@
+---
+# tasks file for postgresql_server
+
+- name: Collect data directory configuration
+  become: true
+  become_user: "{{ postgresql_superuser }}"
+  community.postgresql.postgresql_info:
+    filter: "settings"
+  register: pg_info
+
+- name: Move cluster data
+  become: true
+  become_user: "{{ postgresql_superuser }}"
+  when: pg_info['settings']['data_directory']['setting'] != postgresql_server_data_dir
+  block:
+    - name: Change config
+      ansible.builtin.blockinfile:
+        dest: "{{ pg_info['settings']['config_file']['setting'] }}"
+        block: "data_directory = '{{ postgresql_server_data_dir }}'"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - PSQL DATA DIRECTORY"
+        insertafter: "EOF"
+        backup: true
+        state: present
+      notify: Cluster data setting changes
+
+    - name: Make sure cluster moving handler is triggered now
+      ansible.builtin.meta: flush_handlers

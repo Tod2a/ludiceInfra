@@ -1,0 +1,33 @@
+---
+# tasks file for base_server
+
+- name: No SSH login password authentication
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^(#)?PasswordAuthentication (yes|no|no  # Managed by Ansible)$'
+    line: "PasswordAuthentication no  # Managed by Ansible"
+    state: present
+    backup: true
+    validate: /usr/sbin/sshd -T -f %s
+  when: base_server_config_no_password_auth
+  notify:
+    - Restart sshd
+
+- name: SSH allowed user
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^AllowUsers .+( .+)*(  # Managed by Ansible)?$'
+    line: "AllowUsers {{ base_server_config_allowed_users }}  # Managed by Ansible"
+    state: present
+    backup: true
+    validate: /usr/sbin/sshd -T -f %s
+  when: base_server_config_allowed_users
+  notify:
+    - Restart sshd
+
+- name: Install or update common tools
+  ansible.builtin.apt:
+    name: "{{ base_server_tools }}"
+    state: latest
+    install_recommends: false
+    update_cache: true

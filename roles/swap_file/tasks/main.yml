@@ -1,0 +1,42 @@
+---
+# tasks file for swap file
+
+- name: Check swap file and size
+  register: checkSwap
+  ansible.builtin.stat:
+    path: "{{ swap_file_path }}"
+
+
+- name: Allocate the swap file
+  ansible.builtin.shell:
+    cmd: "fallocate -l {{ swap_file_size }} {{ swap_file_path }}"
+    creates: "{{ swap_file_path }}"
+  when: not checkSwap.stat.exists
+  
+- name: Change permission of the swap file
+  ansible.builtin.file:
+    path: "{{ swap_file_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Create swap area in swap file
+  ansible.builtin.shell:
+    cmd: "mkswap {{ swap_file_path }}"
+  when: not checkSwap.stat.exists
+
+- name: Enable swap file
+  ansible.builtin.shell:
+    cmd: "swapon {{ swap_file_path }}"
+  when: not checkSwap.stat.exists
+
+- name: Mount and bind volume
+  ansible.posix.mount:
+    name: none
+    src: "{{ swap_file_path }}"
+    fstype: swap
+    opts: sw
+    passno: 0
+    dump: 0
+    state: present
+    backup: true
