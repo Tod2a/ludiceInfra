@@ -13,9 +13,6 @@
       - php-bcmath
       - php-curl
       - php-mysql
-      - unzip
-      - curl
-      - git
       - php-zip
       - php-tokenizer
       - php-common
@@ -30,24 +27,24 @@
     install_recommends: false
     update_cache: true
 
-- name: Create symlink
+- name: Create ludice directory
   ansible.builtin.file:
     name: "{{ ludice_setup_path }}"
     owner: ludice
     group: ludice
     state: directory
 
-- name: Setup repository
-  become: true
-  become_user: ludice
-  ansible.builtin.git:
-    repo: "{{ ludice_setup_repository }}"
-    dest: "{{ ludice_setup_path }}/app"
-    version: "{{ ludice_setup_branch }}"
+# - name: Setup repository
+#   become: true
+#   become_user: ludice
+#   ansible.builtin.git:
+#     repo: "{{ ludice_setup_repository }}"
+#     dest: "{{ ludice_setup_path }}/app"
+#     version: "{{ ludice_setup_branch }}"
 
 - name: Create symlink
   ansible.builtin.file:
-    src: "{{ ludice_setup_path }}/app/public"
+    src: "{{ ludice_setup_path }}/app/current/public"
     dest: "{{ ludice_setup_symlink }}"
     owner: ludice
     group: ludice
@@ -61,3 +58,8 @@
     group: root
     mode: '0644'
   notify: Restart nginx
+
+# TODO:
+# setup db user and db password and db name
+# setup certbot & install
+# add github actions keys

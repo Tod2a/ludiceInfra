@@ -19,3 +19,6 @@ base_server_config_no_password_auth: true
 base_server_tools:
   - fail2ban
   - acl
+  - unzip
+  - curl
+  - git
