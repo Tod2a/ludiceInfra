@@ -15,3 +15,11 @@
     state: mounted
     fstype: ext4
     backup: true
+
+- name: Allow user to create directory in data disk
+  ansible.builtin.file:
+    name: "{{ data_disk_mount }}"
+    owner: "{{ ludice_setup_user }}"
+    group: "{{ ludice_setup_user }}"
+    mode: "0777"
+    state: directory

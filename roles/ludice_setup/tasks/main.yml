@@ -30,36 +30,85 @@
 - name: Create ludice directory
   ansible.builtin.file:
     name: "{{ ludice_setup_path }}"
-    owner: ludice
-    group: ludice
+    owner: "{{ ludice_setup_user }}"
+    group: "{{ ludice_setup_user }}"
     state: directory
-
-# - name: Setup repository
-#   become: true
-#   become_user: ludice
-#   ansible.builtin.git:
-#     repo: "{{ ludice_setup_repository }}"
-#     dest: "{{ ludice_setup_path }}/app"
-#     version: "{{ ludice_setup_branch }}"
 
 - name: Create symlink
   ansible.builtin.file:
-    src: "{{ ludice_setup_path }}/app/current/public"
-    dest: "{{ ludice_setup_symlink }}"
-    owner: ludice
-    group: ludice
+    src: "{{ ludice_setup_deployer_path }}"
+    path: "{{ ludice_setup_symlink }}"
+    owner: "{{ ludice_setup_user }}"
+    group: "{{ ludice_setup_user }}"
+    force: true
     state: link
 
-- name: Nginx config
+- name: Setup database user
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: "{{ ludice_db_user }}"
+    password: "{{ ludice_db_password }}"
+    state: present
+
+- name: Create database
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_db:
+    name: "{{ ludice_db_name }}"
+    owner: "{{ ludice_db_user }}"
+    state: present
+
+- name: Install Certbot
+  community.general.snap:
+    name: certbot
+    classic: true
+
+- name: Delete default nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Restart nginx
+
+- name: Nginx ludice config
   ansible.builtin.template:
-    src: nginx.conf.j2
-    dest: /etc/nginx/sites-enabled/ludice
+    src: nginx-ludice.conf.j2
+    dest: /etc/nginx/sites-available/nginx-ludice.conf
     owner: root
     group: root
     mode: '0644'
   notify: Restart nginx
 
-# TODO:
-# setup db user and db password and db name
-# setup certbot & install
-# add github actions keys
+- name: Check server config exists
+  ansible.builtin.stat:
+    path: /etc/nginx/sites-available/ludice
+  register: st
+
+- name: Nginx server config
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/ludice
+    owner: root
+    group: root
+    mode: '0644'
+  when: not st.stat.exists
+  notify: Restart nginx
+
+- name: Create nginx symlink
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/ludice
+    dest: /etc/nginx/sites-enabled/ludice
+    owner: root
+    group: root
+    state: link
+
+- name: Certbot
+  ansible.builtin.shell:
+    cmd: |
+      certbot --nginx \
+              --non-interactive \
+              --agree-tos \
+              --redirect \
+              --email 'support@ludice.app' \
+              --domains {{ ludice_server_url }}
+    creates: "/etc/letsencrypt/live/{{ ludice_server_url }}"

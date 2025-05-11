@@ -1,1 +1,6 @@
 # ludiceInfra
+
+## Setup steps
+
+...
+

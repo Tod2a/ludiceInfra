@@ -1,12 +1,21 @@
 all:
   vars:
     ludice_user: ludice
-    ludice_authorized_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICR60RcZXhfTyTc5YKCXp+ZKHiAmAvWB2EBS/zIIhr7+"
+    ludice_authorized_keys:
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICR60RcZXhfTyTc5YKCXp+ZKHiAmAvWB2EBS/zIIhr7+ tod2a@TodAa"
+      - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5j8omZqgfO0KkWqSlEykWF7zlVVm803mXQHHugqWtD github-actions@ludice.app"
     base_server_config_allowed_users: "{{ ludice_user }}"
     postgresql_server_custom_cluster: true
     postgresql_server_data_dir: "/data/postgresql"
   hosts:
     tst.ludice.app:
-      ludice_setup_branch: "develop"
-    # ludice.app:
-    #   ludice_setup_branch: "master"
+      ludice_db_user: "ludice"
+      ludice_db_name: "ludice"
+      ludice_db_password: "ludice"
+      ludice_server_url: "tst.ludice.app"
+    ludice.app:
+      ludice_db_user: "ludice"
+      ludice_db_name: "ludice"
+      ludice_db_password: "ludice"
+      ludice_server_url: "ludice.app"
+      

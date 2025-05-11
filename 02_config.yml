@@ -9,5 +9,4 @@
     - role: data_disk
     - role: swap_file
     - role: postgresql_server
-    #- role: ludice_setup
-
+    - role: ludice_setup

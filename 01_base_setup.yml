@@ -31,6 +31,8 @@
   - name: Update Authorized keys for ludice user
     ansible.posix.authorized_key:
       user: "{{ ludice_user }}"
-      key: "{{ ludice_authorized_key }}"
+      key: "{{ item }}"
+      exclusive: false
       state: present
+    loop: "{{ ludice_authorized_keys }}"
 

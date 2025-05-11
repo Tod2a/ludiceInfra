@@ -4,8 +4,8 @@
 
 ludice_setup_repository: "git@github.com:Tod2a/ludiceWeb.git"
 ludice_setup_path: "/data/ludice"
+ludice_setup_deployer_path: "{{ ludice_setup_path }}/app/current/public"
 ludice_setup_user: ludice
-ludice_setup_branch: "develop"
 
 ludice_setup_symlink: "/var/www/ludice"
-ludice_server_url: "tst.ludice.app"
+ludice_server_url: "{{ undef('ludice_server_url should be defined') }}"
